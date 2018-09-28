@@ -1,0 +1,27 @@
+{
+  "name": "sketch-qr-code",
+  "version": "0.1.0",
+  "description": "A Plugin for generate SVG QR Code in Sketch app.",
+  "author": "Lerte Smith <lertesmith@gmail.com>",
+  "engines": {
+    "sketch": ">=3.0"
+  },
+  "skpm": {
+    "name": "Sketch QR Code",
+    "manifest": "src/manifest.json",
+    "main": "sketch-qr-code.sketchplugin",
+    "assets": [
+      "assets/**/*"
+    ]
+  },
+  "scripts": {
+    "build": "skpm-build",
+    "watch": "skpm-build --watch",
+    "start": "skpm-build --watch --run",
+    "postinstall": "npm run build && skpm-link"
+  },
+  "devDependencies": {
+    "@skpm/builder": "^0.5.2",
+    "@skpm/dialog": "^0.2.3"
+  }
+}
