@@ -1,3 +1,5 @@
+# build artifacts
+sketch-qr-code.sketchplugin
 # npm
 node_modules
 .npm
