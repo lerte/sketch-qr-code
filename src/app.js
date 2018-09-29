@@ -5,6 +5,9 @@ import QRCode from './lib/qrcode'
 
 export default function main(context) {
   const str = sketch.UI.getStringFromUser("Please input QR code value", '^_^')
+  if(str == 'null'){
+    return
+  }
   const qrcode = new QRCode(str)
   const options = qrcode.options
   const modules = qrcode.qrcode.modules
