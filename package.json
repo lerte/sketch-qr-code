@@ -23,5 +23,9 @@
   "devDependencies": {
     "@skpm/builder": "^0.5.2",
     "@skpm/dialog": "^0.2.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lerte/sketch-qr-code.git"
   }
 }

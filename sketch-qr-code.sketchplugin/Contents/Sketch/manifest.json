@@ -12,13 +12,13 @@
       "name": "Generate QR Code",
       "shortcut": "ctrl shift q",
       "identifier": "main",
-      "script": "./app.js"
+      "script": "app.js"
     },
     {
       "name": "About",
       "identifier": "about",
       "handler": "about",
-      "script": "./app.js"
+      "script": "app.js"
     }
   ],
   "menu": {
@@ -27,5 +27,8 @@
       "main",
       "about"
     ]
-  }
+  },
+  "version": "0.1.0",
+  "disableCocoaScriptPreprocessor": true,
+  "appcast": "https://raw.githubusercontent.com//master/.appcast.xml"
 }
