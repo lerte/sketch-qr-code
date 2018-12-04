@@ -1,15 +1,50 @@
 import sketch from 'sketch'
 import dialog from '@skpm/dialog'
 import QRCode from './lib/qrcode'
+import NibUI from './lib/sketch-nibui'
 // documentation: https://developer.sketchapp.com/reference/api/
 
-export default function main(context) {
-  const str = sketch.UI.getStringFromUser("Please input QR code value", '^_^')
-  if(str == 'null'){
-    return
+export default function main(context) { 
+  //Load View.nib
+  const nibUI = new NibUI(context, 'View', [
+    "backgroundTextField",
+    "colorTextField",
+    "contentTextField",
+    "eclComboBox",
+    "heightTextField",
+    "paddingTextField",
+    "typeNumberTextField",
+    "widthTextField"
+  ])
+
+  // Configuring alert
+  const alert = NSAlert.alloc().init()
+  alert.setMessageText('Sketch QRCode')
+  alert.addButtonWithTitle('Run')
+  alert.addButtonWithTitle('Cancel')
+  alert.setIcon(NSImage.alloc().initWithContentsOfFile(
+    context.plugin.urlForResourceNamed('icon.png').path()))
+  alert.setAccessoryView(nibUI.view)
+
+  const result = alert.runModal()
+  if(result == NSAlertFirstButtonReturn) {
+    let settings = {
+      padding: nibUI.paddingTextField.intValue(),
+      width: nibUI.widthTextField.intValue(), 
+      height: nibUI.heightTextField.intValue(),
+      typeNumber: nibUI.typeNumberTextField.intValue(),
+      color: nibUI.colorTextField.stringValue(),
+      background: nibUI.backgroundTextField.stringValue(),
+      ecl: nibUI.eclComboBox.stringValue()
+    }
+    const content = nibUI.contentTextField.stringValue()
+    generate(settings, content)
   }
-  const qrcode = new QRCode(str)
-  const options = qrcode.options
+}
+
+function generate(inputSettings, content){
+  const qrcode = new QRCode(`${content}`)
+  const options = Object.assign(getDefaultSettings(), inputSettings)
   const modules = qrcode.qrcode.modules
   const width = options.width
   const height = options.height
@@ -35,8 +70,8 @@ export default function main(context) {
           style: {
             fills: [
               {
-                color: options.color,
-                fill: sketch.Style.FillType.Color
+                color: `${options.color}`,
+                fill: `${options.background}`
               }
             ],
             borders: []
@@ -50,7 +85,7 @@ export default function main(context) {
   const page = document.selectedPage
 
   const group = new sketch.Group({
-    name: `qr-${str}`,
+    name: `qr-${content}`,
     parent: page,
     frame: {
       x: 0,
@@ -63,12 +98,24 @@ export default function main(context) {
 
   document.centerOnLayer(group)
 }
-  
+
+function getDefaultSettings(){
+  return {
+		padding: 4,
+		width: 256, 
+		height: 256,
+		typeNumber: 4,
+		color: "#000000",
+		background: "#ffffff",
+		ecl: "M"
+	}
+}
+
 export function about(){
   dialog.showMessageBox({
     message: 'About Sketch QRCode',
     detail: `This Plugin uses QRCode.js library [https://github.com/davidshimjs/qrcodejs] \n\nIt's for generate svg QR Code in Sketch app.`,
-    buttons: ['Feedback', 'Edit Settings', 'Reset Settings', 'Cancel']
+    buttons: ['Feedback', 'Cancel']
   }, ({response})=>{
     switch (response) {
       case 0: // Feedback
@@ -76,11 +123,7 @@ export function about(){
         const nsurl = NSURL.URLWithString(url)
         NSWorkspace.sharedWorkspace().openURL(nsurl)
         return
-      case 1: // Edit Settings
-        return
-      case 2: // Reset Settings
-        return
-      case 3: // Cancel
+      case 1: // Cancel
         return
 			default:
 			throw new Error("Unknwon response: " + response)
