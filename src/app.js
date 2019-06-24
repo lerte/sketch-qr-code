@@ -2,6 +2,7 @@ import sketch from 'sketch'
 import dialog from '@skpm/dialog'
 import QRCode from './lib/qrcode'
 import NibUI from './lib/sketch-nibui'
+import { Style } from 'sketch/dom'
 // documentation: https://developer.sketchapp.com/reference/api/
 
 export default function main(context) { 
@@ -22,10 +23,8 @@ export default function main(context) {
   alert.setMessageText('Sketch QRCode')
   alert.addButtonWithTitle('Run')
   alert.addButtonWithTitle('Cancel')
-  alert.setIcon(NSImage.alloc().initWithContentsOfFile(
-    context.plugin.urlForResourceNamed('icon.png').path()))
+  // alert.setIcon(NSImage.alloc().initWithContentsOfFile(context.plugin.urlForResourceNamed('icon.png').path()))
   alert.setAccessoryView(nibUI.view)
-
   const result = alert.runModal()
   if(result == NSAlertFirstButtonReturn) {
     let settings = {
@@ -71,7 +70,7 @@ function generate(inputSettings, content){
             fills: [
               {
                 color: `${options.color}`,
-                fill: `${options.background}`
+                fillType: Style.FillType.Color,
               }
             ],
             borders: []
